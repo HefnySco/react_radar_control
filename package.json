@@ -1,6 +1,6 @@
 {
   "name": "radar_screen_react",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A React radar screen component for visualizing grid-based data with highlighting capabilities.",
   "author": {
     "email": "mohammad.hefny@gmail.com",
