@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar Screen Component Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .demo-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        .radar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background-color: #1a1a1a;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        .radar-canvas {
+            border: 2px solid #00ff00;
+            border-radius: 0.25rem;
+        }
+        .control-panel {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1rem;
+        }
+        .highlight-point {
+            display: inline-flex;
+            align-items: center;
+            margin: 0.25rem 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            background-color: #e9ecef;
+        }
+        .color-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Radar Screen Component Demo</h1>
+        <p class="lead">A React radar screen component that displays a grid-based radar visualization with customizable highlighting capabilities.</p>
+        
+        <div class="alert alert-info">
+    <strong>Note:</strong> This is a static HTML demo that simulates the radar component. The actual React component (<code>Class_Radar_Screen</code>) is available in the source code and provides the same functionality with proper rotation behavior.
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="demo-section">
+                    <h4>Radar Screen Visualization</h4>
+                    <div class="radar-container">
+                        <canvas id="radarCanvas" class="radar-canvas" width="400" height="400"></canvas>
+                    </div>
+                    <div class="text-center">
+                        <small class="text-muted">Interactive radar display with 8 sections and 4 depth levels</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="demo-section">
+                    <h4>Highlighted Points</h4>
+                    <div class="control-panel">
+                        <div class="mb-3">
+                            <label class="form-label">Active Highlights:</label>
+                            <div id="highlightList">
+                                <div class="highlight-point">
+                                    <span class="color-indicator" style="background-color: #ff0000;"></span>
+                                    Section 3, Depth 2
+                                </div>
+                                <div class="highlight-point">
+                                    <span class="color-indicator" style="background-color: #00ff00;"></span>
+                                    Section 5, Depth 4
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-primary" onclick="addRandomHighlight()">Add Random Point</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearHighlights()">Clear All</button>
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Rotation Controls</h4>
+                    <div class="control-panel">
+                        <div class="mb-3">
+                            <label class="form-label">Rotation Angle: <span id="rotationValue">0°</span></label>
+                            <input type="range" class="form-range" id="rotationSlider" min="0" max="360" value="0" step="1">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rotation Steps: <span id="stepsValue">0</span></label>
+                            <input type="range" class="form-range" id="stepsSlider" min="0" max="8" value="0" step="1">
+                        </div>
+                        <button class="btn btn-sm btn-success" onclick="startAutoRotate()">Auto Rotate</button>
+                        <button class="btn btn-sm btn-warning" onclick="stopAutoRotate()">Stop Rotation</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="resetRotation()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Radar Properties</h4>
+                    <div class="control-panel">
+                        <div class="mb-2">
+                            <strong>Sections:</strong> 8 rays
+                        </div>
+                        <div class="mb-2">
+                            <strong>Depth:</strong> 4 circles
+                        </div>
+                        <div class="mb-2">
+                            <strong>Rotation:</strong> 0°
+                        </div>
+                        <div class="mb-2">
+                            <strong>Pointer:</strong> Enabled
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h4>Component Features</h4>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center p-3 border rounded">
+                        <h5>Grid System</h5>
+                        <div style="font-size: 2rem;">🎯</div>
+                        <p class="mt-2">Configurable sections and depth levels</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 border rounded">
+                        <h5>Highlighting</h5>
+                        <div style="font-size: 2rem;">🎨</div>
+                        <p class="mt-2">Dynamic point highlighting with custom colors</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 border rounded">
+                        <h5>Rotation</h5>
+                        <div style="font-size: 2rem;">🔄</div>
+                        <p class="mt-2">Adjustable rotation and orientation</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 border rounded">
+                        <h5>Distance Display</h5>
+                        <div style="font-size: 2rem;">📏</div>
+                        <p class="mt-2">Automatic distance calculation and display</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h4>Usage Code</h4>
+            <pre><code>import { Class_Radar_Screen } from './jsc_mctrl_radar_screen';
+
+const MyComponent = () => {
+    const highlightedPoints = [
+        [3, 2, '#ff0000'],  // section 3, depth 2, red
+        [5, 4, '#00ff00']   // section 5, depth 4, green
+    ];
+
+    return (
+        &lt;Class_Radar_Screen 
+            sections={8}
+            depth={4}
+            rotation_steps={0}
+            rotation={0}
+            highlighted_points={highlightedPoints}
+            draw_pointer={true}
+        /&gt;
+    );
+};</code></pre>
+        </div>
+
+        <div class="demo-section">
+            <h4>Props Reference</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Prop</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>sections</code></td>
+                            <td>number</td>
+                            <td>8</td>
+                            <td>Number of radial sections (rays)</td>
+                        </tr>
+                        <tr>
+                            <td><code>depth</code></td>
+                            <td>number</td>
+                            <td>4</td>
+                            <td>Number of concentric circles</td>
+                        </tr>
+                        <tr>
+                            <td><code>rotation_steps</code></td>
+                            <td>number</td>
+                            <td>0</td>
+                            <td>Rotation steps between rays</td>
+                        </tr>
+                        <tr>
+                            <td><code>rotation</code></td>
+                            <td>number</td>
+                            <td>0</td>
+                            <td>Free rotation in radians</td>
+                        </tr>
+                        <tr>
+                            <td><code>highlighted_points</code></td>
+                            <td>array</td>
+                            <td>[]</td>
+                            <td>Array of [section, depth, color] points</td>
+                        </tr>
+                        <tr>
+                            <td><code>draw_pointer</code></td>
+                            <td>boolean</td>
+                            <td>false</td>
+                            <td>Draw north arrow pointer</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple radar visualization for demo
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        let highlights = [[3, 2, '#ff0000'], [5, 4, '#00ff00']];
+        let rotation = 0;
+        let rotationSteps = 0;
+        let autoRotateInterval = null;
+
+        function drawRadar() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) / 2 * 0.8;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Save context and apply rotation
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((rotation * Math.PI / 180) + (rotationSteps * Math.PI / 8));
+            ctx.translate(-centerX, -centerY);
+            
+            // Draw grid
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 1;
+            
+            // Draw rays
+            for (let i = 0; i < 8; i++) {
+                const angle = (Math.PI * 2 * i) / 8 - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
+            
+            // Draw circles
+            for (let i = 1; i <= 4; i++) {
+                const r = radius * (i / 4);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Draw north arrow
+            ctx.fillStyle = '#ffff00';
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - radius - 20);
+            ctx.lineTo(centerX - 5, centerY - radius);
+            ctx.lineTo(centerX + 5, centerY - radius);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Restore context before drawing highlights
+            ctx.restore();
+            
+            // Draw highlights (rotated with the grid)
+            highlights.forEach(([section, depth, color]) => {
+                const startAngle = (Math.PI * 2 * (section - 1)) / 8 - Math.PI / 2 + (rotation * Math.PI / 180) + (rotationSteps * Math.PI / 8);
+                const endAngle = (Math.PI * 2 * section) / 8 - Math.PI / 2 + (rotation * Math.PI / 180) + (rotationSteps * Math.PI / 8);
+                const innerRadius = radius * ((depth - 1) / 4);
+                const outerRadius = radius * (depth / 4);
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+                ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+
+        function addRandomHighlight() {
+            const section = Math.floor(Math.random() * 8) + 1;
+            const depth = Math.floor(Math.random() * 4) + 1;
+            const color = '#' + Math.floor(Math.random()*16777215).toString(16);
+            highlights.push([section, depth, color]);
+            updateHighlightList();
+            drawRadar();
+        }
+
+        function clearHighlights() {
+            highlights = [];
+            updateHighlightList();
+            drawRadar();
+        }
+
+        function updateHighlightList() {
+            const list = document.getElementById('highlightList');
+            list.innerHTML = highlights.map(([section, depth, color]) => `
+                <div class="highlight-point">
+                    <span class="color-indicator" style="background-color: ${color};"></span>
+                    Section ${section}, Depth ${depth}
+                </div>
+            `).join('');
+        }
+
+        // Rotation control functions
+        function updateRotation() {
+            const slider = document.getElementById('rotationSlider');
+            const value = document.getElementById('rotationValue');
+            rotation = parseFloat(slider.value);
+            value.textContent = rotation + '°';
+            drawRadar();
+        }
+
+        function updateRotationSteps() {
+            const slider = document.getElementById('stepsSlider');
+            const value = document.getElementById('stepsValue');
+            rotationSteps = parseInt(slider.value);
+            value.textContent = rotationSteps;
+            drawRadar();
+        }
+
+        function startAutoRotate() {
+            if (autoRotateInterval) return;
+            autoRotateInterval = setInterval(() => {
+                rotation = (rotation + 1) % 360;
+                document.getElementById('rotationSlider').value = rotation;
+                document.getElementById('rotationValue').textContent = rotation + '°';
+                drawRadar();
+            }, 50);
+        }
+
+        function stopAutoRotate() {
+            if (autoRotateInterval) {
+                clearInterval(autoRotateInterval);
+                autoRotateInterval = null;
+            }
+        }
+
+        function resetRotation() {
+            stopAutoRotate();
+            rotation = 0;
+            rotationSteps = 0;
+            document.getElementById('rotationSlider').value = 0;
+            document.getElementById('rotationValue').textContent = '0°';
+            document.getElementById('stepsSlider').value = 0;
+            document.getElementById('stepsValue').textContent = '0';
+            drawRadar();
+        }
+
+        // Event listeners
+        document.getElementById('rotationSlider').addEventListener('input', updateRotation);
+        document.getElementById('stepsSlider').addEventListener('input', updateRotationSteps);
+
+        // Initial draw
+        drawRadar();
+    </script>
+</body>
+</html>
