@@ -1,6 +1,6 @@
 # Radar Screen React Component
 
-![Radar Screen Component](resources/radar.png)
+![Radar Screen Component](https://github.com/HefnySco/radar_screen_react/blob/main/resources/radar.png)
 
 ## Overview
 

@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
-// Basic validation tests for CTriStateChecked component
+// Basic validation tests for Class_Radar_Screen component
 // This script validates the built component before publishing
 
 const fs = require('fs');
 const path = require('path');
 
-console.log('🧪 Running CTriStateChecked Component Validation...\n');
+console.log('🧪 Running Class_Radar_Screen Component Validation...\n');
 
 // Test 1: Check if built file exists
 console.log('1. Checking built file...');
-const builtFile = path.join(__dirname, '../dist/jsc_mctl_tri_state_check.js');
+const builtFile = path.join(__dirname, '../dist/jsc_mctrl_radar_screen.js');
 if (fs.existsSync(builtFile)) {
     console.log('✅ Built file exists');
     const stats = fs.statSync(builtFile);
@@ -20,120 +20,144 @@ if (fs.existsSync(builtFile)) {
     process.exit(1);
 }
 
-// Test 2: Check if source files exist
-console.log('\n2. Checking source files...');
-const sourceFiles = [
-    '../src/index.ts',
-    '../src/jsc_mctl_tri_state_check.jsx'
-];
-
-sourceFiles.forEach(file => {
-    const filePath = path.join(__dirname, file);
-    if (fs.existsSync(filePath)) {
-        console.log(`✅ ${file} exists`);
-    } else {
-        console.log(`❌ ${file} missing!`);
-        process.exit(1);
-    }
-});
-
-// Test 3: Check package.json
-console.log('\n3. Checking package.json...');
-const packagePath = path.join(__dirname, '../package.json');
-if (fs.existsSync(packagePath)) {
-    const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-    
-    // Check required fields
-    const requiredFields = ['name', 'version', 'description', 'main'];
-    requiredFields.forEach(field => {
-        if (pkg[field]) {
-            console.log(`✅ ${field}: ${pkg[field]}`);
-        } else {
-            console.log(`❌ Missing ${field}!`);
-            process.exit(1);
-        }
-    });
-    
-    // Check version format
-    if (/^\d+\.\d+\.\d+$/.test(pkg.version)) {
-        console.log(`✅ Version format is valid`);
-    } else {
-        console.log(`❌ Invalid version format!`);
-        process.exit(1);
-    }
+// Test 2: Check if source file exists
+console.log('\n2. Checking source file...');
+const sourceFile = path.join(__dirname, '../src/jsc_mctrl_radar_screen.jsx');
+if (fs.existsSync(sourceFile)) {
+    console.log('✅ Source file exists');
+    const stats = fs.statSync(sourceFile);
+    console.log(`   Size: ${stats.size} bytes`);
 } else {
-    console.log('❌ package.json missing!');
+    console.log('❌ Source file missing!');
     process.exit(1);
 }
 
-// Test 4: Check documentation
-console.log('\n4. Checking documentation...');
-const docFiles = [
-    '../README.md',
-    '../demo.html',
-    '../example.js'
-];
-
-docFiles.forEach(file => {
-    const filePath = path.join(__dirname, file);
-    if (fs.existsSync(filePath)) {
-        console.log(`✅ ${file} exists`);
-    } else {
-        console.log(`⚠️  ${file} missing (optional)`);
-    }
-});
-
-// Test 5: Validate built content
-console.log('\n5. Validating built content...');
-const builtContent = fs.readFileSync(builtFile, 'utf8');
-
-const checks = [
-    { pattern: /CTriStateChecked/, name: 'Component name' },
-    { pattern: /propTypes/, name: 'PropTypes definition' },
-    { pattern: /onChange/, name: 'onChange handler' },
-    { pattern: /useState/, name: 'React hooks' },
-    { pattern: /useEffect/, name: 'React useEffect' }
-];
-
-checks.forEach(check => {
-    if (check.pattern.test(builtContent)) {
-        console.log(`✅ ${check.name} found`);
-    } else {
-        console.log(`❌ ${check.name} missing!`);
+// Test 3: Validate source file content
+console.log('\n3. Validating source file content...');
+try {
+    const sourceContent = fs.readFileSync(sourceFile, 'utf8');
+    
+    // Check for essential radar component elements
+    const requiredElements = [
+        { name: 'Class_Radar_Screen', pattern: /class\s+Class_Radar_Screen/ },
+        { name: 'React.Component', pattern: /extends\s+React\.Component/ },
+        { name: 'drawRadar method', pattern: /drawRadar\s*=/ },
+        { name: 'highlightSection method', pattern: /highlightSection\s*=/ },
+        { name: 'Canvas rendering', pattern: /canvasRef/ },
+        { name: 'Props validation', pattern: /this\.props\./ }
+    ];
+    
+    let allTestsPassed = true;
+    
+    requiredElements.forEach(element => {
+        if (element.pattern.test(sourceContent)) {
+            console.log(`✅ ${element.name} found`);
+        } else {
+            console.log(`❌ ${element.name} missing!`);
+            allTestsPassed = false;
+        }
+    });
+    
+    if (!allTestsPassed) {
+        console.log('❌ Source file validation failed!');
         process.exit(1);
     }
-});
-
-// Test 6: Check file sizes
-console.log('\n6. Checking file sizes...');
-const builtStats = fs.statSync(builtFile);
-const maxSize = 50 * 1024; // 50KB max
-
-if (builtStats.size <= maxSize) {
-    console.log(`✅ Built file size is acceptable (${builtStats.size} bytes)`);
-} else {
-    console.log(`⚠️  Built file is large (${builtStats.size} bytes)`);
+    
+} catch (error) {
+    console.log('❌ Error reading source file:', error.message);
+    process.exit(1);
 }
 
-// Test 7: Validate export
-console.log('\n7. Checking exports...');
-const indexPath = path.join(__dirname, '../src/index.ts');
-if (fs.existsSync(indexPath)) {
-    const indexContent = fs.readFileSync(indexPath, 'utf8');
-    if (indexContent.includes('CTriStateChecked')) {
-        console.log('✅ Export is properly defined');
-    } else {
-        console.log('❌ Export missing!');
+// Test 4: Check package.json configuration
+console.log('\n4. Validating package.json...');
+try {
+    const packagePath = path.join(__dirname, '../package.json');
+    const packageContent = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+    
+    const requiredFields = [
+        { name: 'Package name', value: packageContent.name, expected: 'radar_screen_react' },
+        { name: 'Main file', value: packageContent.main, expected: 'dist/jsc_mctrl_radar_screen.js' },
+        { name: 'React peer dependency', value: packageContent.peerDependencies?.react, pattern: />=/ }
+    ];
+    
+    let allTestsPassed = true;
+    
+    requiredFields.forEach(field => {
+        if (field.pattern) {
+            if (field.pattern.test(field.value)) {
+                console.log(`✅ ${field.name} is valid`);
+            } else {
+                console.log(`❌ ${field.name} is invalid: ${field.value}`);
+                allTestsPassed = false;
+            }
+        } else {
+            if (field.value === field.expected) {
+                console.log(`✅ ${field.name} is correct`);
+            } else {
+                console.log(`❌ ${field.name} mismatch: expected "${field.expected}", got "${field.value}"`);
+                allTestsPassed = false;
+            }
+        }
+    });
+    
+    if (!allTestsPassed) {
+        console.log('❌ Package.json validation failed!');
         process.exit(1);
     }
+    
+} catch (error) {
+    console.log('❌ Error reading package.json:', error.message);
+    process.exit(1);
+}
+
+// Test 5: Check demo files
+console.log('\n5. Validating demo files...');
+const demoFiles = [
+    { name: 'HTML Demo', path: '../demo.html' },
+    { name: 'React Example', path: '../example.js' },
+    { name: 'README', path: '../README.md' }
+];
+
+let allDemoTestsPassed = true;
+
+demoFiles.forEach(demo => {
+    const demoPath = path.join(__dirname, demo.path);
+    if (fs.existsSync(demoPath)) {
+        console.log(`✅ ${demo.name} exists`);
+    } else {
+        console.log(`❌ ${demo.name} missing!`);
+        allDemoTestsPassed = false;
+    }
+});
+
+if (!allDemoTestsPassed) {
+    console.log('❌ Demo files validation failed!');
+    process.exit(1);
+}
+
+// Test 6: Check radar resources
+console.log('\n6. Validating radar resources...');
+const radarImagePath = path.join(__dirname, '../resources/radar.png');
+if (fs.existsSync(radarImagePath)) {
+    console.log('✅ Radar image exists');
+    const stats = fs.statSync(radarImagePath);
+    console.log(`   Size: ${stats.size} bytes`);
+} else {
+    console.log('❌ Radar image missing!');
+    process.exit(1);
 }
 
 console.log('\n🎉 All validation tests passed!');
-console.log('✅ Component is ready for publishing\n');
+console.log('✅ Class_Radar_Screen component is ready for publishing!');
+console.log('\n📦 Next steps:');
+console.log('   1. Run: npm run build');
+console.log('   2. Run: npm run test:build');
+console.log('   3. Run: npm publish');
 
 // Display package info
+const packagePath = path.join(__dirname, '../package.json');
 const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-console.log('📦 Package Information:');
+console.log('\n📦 Package Information:');
 console.log(`   Name: ${pkg.name}`);
 console.log(`   Version: ${pkg.version}`);
 console.log(`   Description: ${pkg.description}`);
